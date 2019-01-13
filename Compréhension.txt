@@ -1,0 +1,45 @@
+Compréhension du sujet:
+
+deck = 20 cartes
+vie : 150pv
+
+Card = Champion: stat attaque + stat def.
+
+Tour/Tour, firt to 0 loose
+
+Start game: 
+	-4 cards piochées par joueurs
+
+Tour:
+3 actions ordres non obligatoire
+	
+	-Piocher une carte(1/Tour max)
+	-Poser une carte (5 max/Joueur)
+	-Attaquer (1/Tour et par Carte)
+
+Une carte ne deviens jouable qu'au tour d'après
+
+Attaque:
+	Cas:
+	- Att > Def_Adversaire -> carte supprimée et différence enlevé au pv adverse
+	- Att == Def_Adversaire -> 2 cartes sont detruites
+	- Att < Def_Adversaire -> cartes Att detruite
+	- Aucune carte Def -> Att directement les pv.
+
+
+
+Information Générales.
+
+Pour le Back-end:
+Le nom des Web Services est précisé à la fin de l'URL. WS type GET et sont dans le dossier modules.
+4 catégories:
+	- Utilisateurs: /users/...
+	- Recherche match: /matchmaking/...
+	- Match: /match/...
+	- Cartes: /cards/...
+
+Return object JSON ac 2 champs (cf. p.4/12 et p.5/12):
+	- "status": etat WS + erreur? 'ok' ou 'error'
+	- (si "status" == ok) "data": données retournées.	
+	- (si "status" == error) "message": message précisant l'erreur.
+

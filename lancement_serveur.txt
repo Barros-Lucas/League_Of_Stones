@@ -1,0 +1,13 @@
+Le client web sera développé en React. Un début d’implémentation du client web contenant
+l’authentification est disponible sur
+https://github.com/blandine/los-ui. Vous pouvez forker ce repository pour vous aider à démarrer
+
+Web Servies accessibles via : 
+http://ling.westeurope.cloudapp.azure.com:3000/
+code acces:
+https://github.com/blandine/League-Of-Stones
+
+Création du serveur Express + bdd MongoDB
+WebServices accessibles via:
+localhost:3000/
+

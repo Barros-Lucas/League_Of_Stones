@@ -1,0 +1,149 @@
+Tâches à réaliser par ordre.
+
+Gestion utilisateur:
+	- Créer son compte
+	— Se désinscrire
+	— Se connecter
+	— Se déconnecter
+
+Créer son compte:
+
+Via WS /users/subscribe
+parametres : "email", "name", "password"
+(note: password devra être chiffré)
+retour: ID user
+
+exemple: https://iris.univ-tlse2.fr/users/subscribe?email=loutre@murloc.fr&name=Loutre&password=02166e5243dc7270996b465
+
+Supprimer son compte:
+
+Via WS /users/unsubscribe
+parametres: "email", "password"
+
+Connexion:
+
+Via WS /users/connect
+parametres: "email", "password"
+retour: "id", "email", name", "token"
+(note token = token d'identification de la session, il devra être sauvgarder et envoyer à tous les WS qui nécessite une connexion)
+
+Ajout de $token=[token] à chaque interrogation WS.
+(cf. p.6/12)
+
+Deconnexion:
+
+Via WS /users/disconnect
+parametres: aucun (mais il faut être deja connecter 'token' existant)
+retour: aucun mais token delete par le serveur.
+
+
+
+Recherche de match:
+
+Utilisateur déjà connecté. (token valide)
+
+Principe:
+	- Mise à disposition d'une liste de joueurs désirant faire une partie.
+	- Le joueur indique qu'il veut jouer et est ajouté à la liste
+	- Envoie demmande à un autre joueur
+	- Accepte ou refuse l'invitation
+
+Participer:
+
+Via WS /matchmaking/participate
+parametres: aucun
+serveur: met le joueur dans la liste d'attente
+retour: "matchmakingId"= identification du "matchmaking"
+	"request"= tableau contenant l'ensemble des demandes reçus.
+
+Le champ "request" est mis à jour à chaque nouvelle rêquetes. -> Re-envoyer WS pour mettre à jour les infos.
+
+"request": "userId" = id de l'emmeteur de la requete
+"matchmakingId" = id du "matchmaking" de celui du joueur qui invite
+"name"= nom du joueur qui invite
+
+Liste des utilisateurs disirant jouer:
+
+Via WS /matchmaking/getAll
+parametres: aucun
+retour: liste des joueurs (sauf lui-même)
+	joueur= "email", "name", "matchmakingId"
+
+Envoyer une requête:
+
+Via WS /matchmaking/request
+parametres: "matchmakingId"
+retour: message pour dire requête envoyée.
+
+Accepter une requête:
+
+Via WS /matchmaking/accepterRequest
+parametres: "matchmakingId" = celui du joueur ayant envoyé la requête.
+retour: match crée informations: "player1", "player2"
+"player": "name", "id"
+
+note les 2 joueurs sont effacés des listes de matchmaking.
+
+
+Jouer un match
+
+Recupération des informations du match:
+
+Via WS /match/getMatch
+parametres: aucun
+retour: "status", "player1", "player2"
+"player": "hp", "hand", "board", "deck", "cardPicked", "turn" (cf. p9/12)
+
+Récuprération des données de toutes les cartes:
+
+Via WS /cards/getAll
+parametres: aucun
+retour: liste des cartes dispo
+
+Constitution du deck:
+
+Via WS /match/initDeck
+parametres: le nom des champions (max 20)
+retour: un jeu mélangé de 20 cartes stoqué dans le serveur comme votre deck
+
+Pïoche une carte:
+
+uniquement 1 fois par tour, si c'est votre tour
+Via WS /match/pickCard
+parametres: aucun
+retour: -1 cartes dans le paquet, +1 carte dans votre main
+Information accécible via getMatch 
+
+Jouer une carte
+
+Via WS /match/playCard
+parametres: "card" = attribut key de la carte
+retour: -1 de la main, +1 dans la board
+Information accecible via getMatch
+Uniquement 5 cartes possible dans le board
+Carte jouer pdt un tour ne peux jouer qu'au tour suivant.
+
+exemple: /match/playCard?card=Jax
+
+Faire attaqué un champion: !!YY!! pas tout compris
+
+Via WS match/attack
+parametres: "card", "ennemyCard" = key des cartes
+retour: 
+
+Attaquer adversaire:
+
+Uniquement si le board adverse est vide!
+Via WS /match/attackPlayer
+parametres: "card" = key (pas encore utilisé ce tour)
+
+Fin Tour:
+
+Via WS match/endTurn
+parametres: aucun
+retour: turn est modifié, accecible par getMatch
+
+Fin match:
+
+Via WS match/finisMatch
+parametres: aucun mais turn == false pour les 2 players
